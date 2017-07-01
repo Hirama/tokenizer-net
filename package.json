@@ -1,0 +1,35 @@
+{
+  "name": "tokenizer-net",
+  "version": "0.0.1",
+  "description": "Ethereum smart-contracts with Node JS wrapper on ethereum network for TokenizeCity project",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hirama/tokenizer-net.git"
+  },
+  "keywords": [
+    "ethereum",
+    "solidity",
+    "js"
+  ],
+  "author": "Andrey Zolin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hirama/tokenizer-net/issues"
+  },
+  "homepage": "https://github.com/Hirama/tokenizer-net#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "zeppelin-solidity": "^1.0.7"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
