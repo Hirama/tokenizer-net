@@ -1,4 +1,4 @@
-const ethereum = require('ethereum/eth-context');
+const ethereum = require('../ethereum/eth-context');
 
 module.exports = function(app) {
   const eth = ethereum();

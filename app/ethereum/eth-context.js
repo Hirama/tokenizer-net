@@ -14,7 +14,24 @@ module.exports = function() {
   var address = "0x76202effa6b22d5653bb8db52a09fe059bfdc19e";
 
   // TODO read source code from fs
-  var bytecodeHolder = '';
+  var sourceHolder = fs.readFileSync('./contracts/DealsHolder.sol').toString();
+  var sourceOwnable = fs.readFileSync('./contracts/zeppelin/ownership/Ownable.sol').toString();
+
+  let sourceInput = {
+    "zeppelin/ownership/Ownable.sol" : sourceOwnable,
+    "DealsHolder.sol" : sourceHolder
+
+  };
+
+  console.log(sourceInput);
+
+  // compiled file
+  let outBytecode = solc.compile({sources: sourceInput}, 1);
+  console.log(JSON.stringify(outBytecode));
+  // bytecode
+  var bytecodeHolder = outBytecode.contracts['DealsHolder.sol:DealsHolder'].bytecode;
+  // abi
+  var interfaceHolder = outBytecode.contracts['DealsHolder.sol:DealsHolder'].interface;
 
 
   function sendRaw(rawTx, sendResult) {
