@@ -1,7 +1,13 @@
-module.exports = function(app) {
+const ethereum = require('ethereum/eth-context');
 
-  app.post('/contract', (req, res) => {
-    res.send('Hello')
+module.exports = function(app) {
+  const eth = ethereum();
+
+
+  // Depoly holder contract
+  app.post('/createholder', (req, res) => {
+    eth.createHolder(res);
   });
+
 
 };
