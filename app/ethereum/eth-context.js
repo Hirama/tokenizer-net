@@ -93,16 +93,34 @@ module.exports = function() {
     // var rawTx = txutils.functionTx(JSON.parse(interfaceDealsHolder), 'getDepositByToken', token, txOptions);
     // sendRaw(rawTx, sendResult);
     var contract = web3.eth.contract(JSON.parse(interfaceDealsHolder)).at(contractAddress);
-    console.log(contract);
     contract.getDepositByToken(token, function(error, data) {
       sendResult.send(String(data));
     });
-
   }
+
+  // crowdsale token
+  function createtokendeal(sendResult, landlord, fullpayment, nights, tokenPrice) {
+    // var rawTx = {
+    //     nonce: web3.toHex(web3.eth.getTransactionCount(address)),
+    //     gasLimit: web3.toHex(3000000),
+    //     gasPrice: web3.toHex(20000000000),
+    //     data: '0x' + bytecodeTokenizedDeal
+    // };
+    // sendRaw(rawTx, sendResult);
+    var TokenizedDeal = web3.eth.contract(JSON.parse(interfaceTokenizedDeal));
+    var privateKey = new Buffer(key, 'hex');
+
+    var contractInstance = TokenizedDeal.new([landlord], [fullpayment], [nights], [tokenPrice],
+      {data: bytecodeTokenizedDeal, from: address, gas: 2000000});
+
+      sendResult.send(contractInstance);
+    }
+
   return {
       createHolder: createHolder,
       amountOfWei: amountOfWei,
-      checkFeePayment: checkFeePayment
+      checkFeePayment: checkFeePayment,
+      createtokendeal: createtokendeal
   };
 
 }

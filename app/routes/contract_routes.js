@@ -14,7 +14,6 @@ module.exports = function(app) {
     eth.amountOfWei(res);
   });
 
-
   // Return amount of payment from landlord
   app.post('/checkfeepayment', (req, res) => {
     let token = req.body.token;
@@ -24,7 +23,11 @@ module.exports = function(app) {
 
   // address _landlord, uint _amountOfPayment, uint _nights, uint _tokenPrice
   app.post('/createtokendeal', (req, res) => {
-
+    let landlord = req.body.landlord;
+    let fullpayment = req.body.fullpayment;
+    let nights = req.body.nights;
+    let tokenPrice = req.body.tokenPrice;
+    eth.createtokendeal(res,landlord, fullpayment, nights, tokenPrice)
   });
 
 };
