@@ -54,12 +54,12 @@ contract Deal{
         }
     }
 
-    // Update status and withdraw founds to the lordland
+    // Update status and withdraw founds to the tokenizedDealToken
     function withdraw() public {
         if (DealStatus.InProgress != status) throw;
         if (now - checkIn >= nights) {
-            PaymentInfoTo("Diposit was sended to ", landlord, this.balance);
-            landlord.transfer(this.balance);
+            PaymentInfoTo("Diposit was sended to ", tokenizedDeal, this.balance);
+            tokenizedDeal.transfer(this.balance);
             status = DealStatus.Closed;
         }
     }
