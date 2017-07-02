@@ -82,14 +82,27 @@ module.exports = function() {
   }
 
   // Check if landlord did payment of system-fee
-  function checkFeePayment(sendResult, token) {
+  function checkFeePayment(sendResult, token, contractAddress) {
+    // var txOptions = {
+    //   nonce: web3.toHex(web3.eth.getTransactionCount(address)),
+    //   gasLimit: web3.toHex(2000000),
+    //   gasPrice: web3.toHex(20000000000),
+    //   to: contractAddress
+    // }
+    //
+    // var rawTx = txutils.functionTx(JSON.parse(interfaceDealsHolder), 'getDepositByToken', token, txOptions);
+    // sendRaw(rawTx, sendResult);
+    var contract = web3.eth.contract(JSON.parse(interfaceDealsHolder)).at(contractAddress);
+    console.log(contract);
+    contract.getDepositByToken(token, function(error, data) {
+      sendResult.send(String(data));
+    });
 
   }
-
-
   return {
       createHolder: createHolder,
       amountOfWei: amountOfWei,
+      checkFeePayment: checkFeePayment
   };
 
 }

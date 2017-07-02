@@ -3,7 +3,6 @@ const ethereum = require('../ethereum/eth-context');
 module.exports = function(app) {
   const eth = ethereum();
 
-
   // Depoly holder contract
   app.post('/createholder', (req, res) => {
     eth.createHolder(res);
@@ -16,6 +15,16 @@ module.exports = function(app) {
   });
 
 
+  // Return amount of payment from landlord
+  app.post('/checkfeepayment', (req, res) => {
+    let token = req.body.token;
+    let contractAddress = req.body.contractAddress;
+    eth.checkFeePayment(res, token, contractAddress);
+  });
 
+  // address _landlord, uint _amountOfPayment, uint _nights, uint _tokenPrice
+  app.post('/createtokendeal', (req, res) => {
+
+  });
 
 };
