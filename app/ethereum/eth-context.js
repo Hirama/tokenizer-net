@@ -10,28 +10,39 @@ module.exports = function() {
       new Web3.providers.HttpProvider('http://localhost:8545')
   );
 
-  var key = "345982b296713a858366e0270d266bee2d499e2677dae8ffc3cd107e2b4bc105";
-  var address = "0x76202effa6b22d5653bb8db52a09fe059bfdc19e";
+  var key = "4c1784c029f7edff827ef9e99152342d9b0e7b5b7f264612fac49adad7a9573d";
+  var address = "0x5f7ccb57801ebc0dfac05a997ceb7fbf68cdb56d";
 
-  // TODO read source code from fs
-  var sourceHolder = fs.readFileSync('./contracts/DealsHolder.sol').toString();
+
+  // sources
+  var sourceSafeMath = fs.readFileSync('./contracts/zeppelin/SafeMath.sol').toString();
   var sourceOwnable = fs.readFileSync('./contracts/zeppelin/ownership/Ownable.sol').toString();
+  var sourceERC20Basic = fs.readFileSync('./contracts/zeppelin/token/ERC20Basic.sol').toString();
+  var sourceDealsHolder = fs.readFileSync('./contracts/DealsHolder.sol').toString();
+  var sourceTokenizedDeal = fs.readFileSync('./contracts/TokenizedDeal.sol').toString();
+  var sourceDeal = fs.readFileSync('./contracts/Deal.sol').toString();
+
 
   let sourceInput = {
-    "zeppelin/ownership/Ownable.sol" : sourceOwnable,
-    "DealsHolder.sol" : sourceHolder
-
+    "SafeMath.sol" : sourceSafeMath,
+    "Ownable.sol" : sourceOwnable,
+    "ERC20Basic.sol" : sourceERC20Basic,
+    "DealsHolder.sol" : sourceDealsHolder,
+    "TokenizedDeal.sol" : sourceTokenizedDeal,
+    "Deal.sol" : sourceDeal
   };
-
-  console.log(sourceInput);
 
   // compiled file
   let outBytecode = solc.compile({sources: sourceInput}, 1);
-  console.log(JSON.stringify(outBytecode));
+  // console.log(JSON.stringify(outBytecode));
   // bytecode
-  var bytecodeHolder = outBytecode.contracts['DealsHolder.sol:DealsHolder'].bytecode;
+  var bytecodeDealsHolder = outBytecode.contracts['DealsHolder.sol:DealsHolder'].bytecode;
+  var bytecodeTokenizedDeal = outBytecode.contracts['TokenizedDeal.sol:TokenizedDeal'].bytecode;
+  var bytecodeDeal = outBytecode.contracts['Deal.sol:Deal'].bytecode;
   // abi
-  var interfaceHolder = outBytecode.contracts['DealsHolder.sol:DealsHolder'].interface;
+  var interfaceDealsHolder = outBytecode.contracts['DealsHolder.sol:DealsHolder'].interface;
+  var interfaceTokenizedDeal = outBytecode.contracts['TokenizedDeal.sol:TokenizedDeal'].interface;
+  var interfaceDeal = outBytecode.contracts['Deal.sol:Deal'].interface;
 
 
   function sendRaw(rawTx, sendResult) {
@@ -50,20 +61,35 @@ module.exports = function() {
       });
   }
 
+  // Create core contract holder for system init and recieveng payment fees
   function createHolder(sendResult) {
     var rawTx = {
         nonce: web3.toHex(web3.eth.getTransactionCount(address)),
-        gasLimit: web3.toHex(900000),
+        gasLimit: web3.toHex(3000000),
         gasPrice: web3.toHex(20000000000),
-        data: '0x' + bytecodeHolder
+        data: '0x' + bytecodeDealsHolder
     };
-
     sendRaw(rawTx, sendResult);
+  }
+
+  // Return amount of eth which is needed for transaction execution
+  function amountOfWei(sendResult) {
+    // creating TokenizedDeal = 1638906 gas
+    // creating Deal = 508614 gas
+    let gasPrice = 20000000000;
+    let total = (gasPrice * (1700000 + 600000)) / 10**18;
+    sendResult.send(JSON.stringify({ eth: total }));
+  }
+
+  // Check if landlord did payment of system-fee
+  function checkFeePayment(sendResult, token) {
+
   }
 
 
   return {
-      createHolder: createHolder
+      createHolder: createHolder,
+      amountOfWei: amountOfWei,
   };
 
 }
